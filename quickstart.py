@@ -107,7 +107,7 @@ def get_email_list():
     print(len(emails))
     
     #lets print one email
-    first_email = service.users().messages.get(userId="me", id=emails[0]["id"]).execute()
+    first_email = service.users().messages().get(userId="me", id=emails[0]["id"]).execute()
     print(first_email)
     return emails
 
