@@ -105,23 +105,11 @@ def get_email_list():
         emails.extend(emails2)
     #print(email_results)
     print(len(emails))
-    return emails
-
-    #lets print one email
-    #first_email = service.users().messages.get(userId="me", id=emails[0]["id"]).execute()
-    #print(first_email)
     
-    # if not emails:
-    #     print("something wrong")
-    # else:
-    #     for email in emails:
-    #         print("--",email)
-    # if not labels:
-    #     print('No labels found.')
-    # else:
-    #   print('Labels:')
-    #   for label in labels:
-    #     print(label['name'])
+    #lets print one email
+    first_email = service.users().messages.get(userId="me", id=emails[0]["id"]).execute()
+    print(first_email)
+    return emails
 
 
 if __name__ == '__main__':
