@@ -98,11 +98,14 @@ def get_email_list():
         response = service.users().messages().list(userId="me", pageToken=response["nextPageToken"]).execute()
         emails2 = response["messages"]
         emails.extend(emails2)
+        if(len(emails) > 100):
+        	break
     #print(email_results)
-    print(len(emails))
-
+    #print(len(emails))
+    #print(type(emails))
+    #print(emails[0]["id"])
     message_ID_list = []
-    for message in messages:
+    for message in emails:
     	message_id = message["id"]
     	message_ID_list.append(message_id)
     sender_list = []
@@ -114,10 +117,15 @@ def get_email_list():
     	headers = message["payload"]["headers"]
     	for i in headers:
     		if(i["name"] == "From"):
-    			sender_list.append(i["value"])
+    			whole_desc = i["value"]
+    			#get the email in between the < and >
+    			if("<" in whole_desc):
+	    			sender = whole_desc[whole_desc.index("<")+1 : whole_desc.index(">")]
+	    			sender_list.append(sender)
     			break
     f.write(str(sender_list))
     f.close()
+    print("OK. Done.")
 
 
 if __name__ == "__main__":
