@@ -1,0 +1,8 @@
+DELETE
+help@eventjini.com
+quincy@freecodecamp.org
+info@twitter.com
+#<some more email IDs here>
+
+TRASH
+#<some more email IDs here too>
