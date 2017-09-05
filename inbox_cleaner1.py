@@ -25,12 +25,15 @@ SCOPES = 'https://www.googleapis.com/auth/gmail.modify'
 CLIENT_SECRET_FILE = ''
 
 APPLICATION_NAME = 'Gmail API Python Inbox Cleaner'
+delete_these_emails = ['help@eventjini.com', 'quincy@freecodecamp.org', 'info@twitter.com', 
+'no-reply@training.thelinuxfoundation.org', 'notify@twitter.com']
+"""
 delete_these_emails = ["no-reply@piazza.com","wendy.kan@kaggle.intercom-mail.com",
 "jf48@buffalo.edu","donotreply@intel.com","noreply_alerts@velvetjobs.com",
 "ellen@startwire.com","monster@email.recjobs.monster.com","jobplanner@startwire.com",
 "netsmart@jobs.net","theaerospacecorporation-jobnotification@noreply.jobs2web.com",
 "seekerteam@ziprecruiter.com","donotreply@cisco.avature.net"]
-
+"""
 
 def get_credentials():
     """Gets valid user credentials from storage.
@@ -104,27 +107,37 @@ def get_email_list():
     #print(len(emails))
     #print(type(emails))
     #print(emails[0]["id"])
+    f2 = open("/home/abprashanth/my_projects/Inbox Cleaner/temp_message_id.txt","w")
     message_ID_list = []
     for message in emails:
     	message_id = message["id"]
     	message_ID_list.append(message_id)
     sender_list = []
-    f = open("temp.txt","w")
+    f2.write(str(message_ID_list))
+    f2.close()
+
+    f = open("/home/abprashanth/my_projects/Inbox Cleaner/temp_sender_list.txt","w")
     #make a list of all the senders
     for message_id in message_ID_list:
-    	#messageId = "15e4a0d8b1cfcdb3"
     	message = service.users().messages().get(userId='me',id=message_id).execute()
     	headers = message["payload"]["headers"]
+    	current_id = message["id"] 
     	for i in headers:
     		if(i["name"] == "From"):
     			whole_desc = i["value"]
     			#get the email in between the < and >
     			if("<" in whole_desc):
 	    			sender = whole_desc[whole_desc.index("<")+1 : whole_desc.index(">")]
+	    			if(sender in delete_these_emails):
+	    				#delete them
+	    				print("FOUND: "+sender)
+	    				print("Will delete them soon")
+	    				#service.users().messages().delete(userId = 'me', id=current_id).execute()
 	    			sender_list.append(sender)
     			break
     f.write(str(sender_list))
     f.close()
+    #start deleting them
     print("OK. Done.")
 
 
