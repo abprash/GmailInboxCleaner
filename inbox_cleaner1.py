@@ -25,21 +25,17 @@ SCOPES = 'https://www.googleapis.com/auth/gmail.modify'
 CLIENT_SECRET_FILE = ''
 
 APPLICATION_NAME = 'Gmail API Python Inbox Cleaner'
-delete_these_emails = ['help@eventjini.com', 'quincy@freecodecamp.org', 'info@twitter.com', 
-'no-reply@training.thelinuxfoundation.org', 'notify@twitter.com']
-"""
-delete_these_emails = ["no-reply@piazza.com","wendy.kan@kaggle.intercom-mail.com",
-"jf48@buffalo.edu","donotreply@intel.com","noreply_alerts@velvetjobs.com",
-"ellen@startwire.com","monster@email.recjobs.monster.com","jobplanner@startwire.com",
-"netsmart@jobs.net","theaerospacecorporation-jobnotification@noreply.jobs2web.com",
-"seekerteam@ziprecruiter.com","donotreply@cisco.avature.net"]
-"""
+delete_these_emails = []
+
+
 def get_spammers_list():
     # we have to read a file and construct a list
     senders_list = open("delete_these_senders.txt","r")
     for line in senders_list:
-        print("==>"+line)
-
+        #print("==>"+line)
+        if(line[0] != "#"):
+            delete_these_emails.append(line.strip())
+    print("full list --> \n"+str(delete_these_emails))
 def get_credentials():
     """Gets valid user credentials from storage.
 
@@ -83,35 +79,39 @@ def main():
     Creates a Gmail API service object and outputs a list of label names
     of the user's Gmail account.
     """
-    emails = get_email_list();
+    service = get_service()
+    get_email_list(service)
     credentials,http,service = get_service_details()
     
 
-def get_email_list():
+def get_service():
 	#get all the credentials
     credentials = get_credentials()
     #use them to make a http request
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('gmail', 'v1', http=http)
 
-    results = service.users().labels().list(userId='me').execute()
+    #results = service.users().labels().list(userId='me').execute()
+    
     messages = service.users().messages().list(userId='me').execute()
 
+    return service
+
+
+def get_email_list(service):
     #get a list of all the message IDs
     response = service.users().messages().list(userId='me').execute()
     emails = []
     emails.extend(response["messages"])
 
+    #will scan over all the emails in the inbox
     while "nextPageToken" in response:
         response = service.users().messages().list(userId="me", pageToken=response["nextPageToken"]).execute()
         emails2 = response["messages"]
         emails.extend(emails2)
         if(len(emails) > 100):
         	break
-    #print(email_results)
-    #print(len(emails))
-    #print(type(emails))
-    #print(emails[0]["id"])
+    
     f2 = open("/home/abprashanth/my_projects/Inbox Cleaner/temp_message_id.txt","w")
     message_ID_list = []
     for message in emails:
@@ -148,4 +148,4 @@ def get_email_list():
 
 if __name__ == "__main__":
     get_spammers_list()
-	main()
+    service = main()
