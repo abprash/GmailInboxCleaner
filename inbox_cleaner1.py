@@ -34,6 +34,11 @@ delete_these_emails = ["no-reply@piazza.com","wendy.kan@kaggle.intercom-mail.com
 "netsmart@jobs.net","theaerospacecorporation-jobnotification@noreply.jobs2web.com",
 "seekerteam@ziprecruiter.com","donotreply@cisco.avature.net"]
 """
+def get_spammers_list():
+    # we have to read a file and construct a list
+    senders_list = open("delete_these_senders.txt","r")
+    for line in senders_list:
+        print("==>"+line)
 
 def get_credentials():
     """Gets valid user credentials from storage.
@@ -142,4 +147,5 @@ def get_email_list():
 
 
 if __name__ == "__main__":
+    get_spammers_list()
 	main()

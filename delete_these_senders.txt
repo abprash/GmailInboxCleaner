@@ -1,8 +1,7 @@
-DELETE
+#DELETE
 help@eventjini.com
 quincy@freecodecamp.org
 info@twitter.com
 #<some more email IDs here>
-
-TRASH
-#<some more email IDs here too>
+no-reply@training.thelinuxfoundation.org
+notify@twitter.com
