@@ -5,3 +5,10 @@ info@twitter.com
 #<some more email IDs here>
 no-reply@training.thelinuxfoundation.org
 notify@twitter.com
+noreply@way2sms.biz
+email@extracare.cvs.com
+hello@splitwise.com
+no-reply@eventjini.com
+noreply@topcoder.com
+chesteve@dca.fee.unicamp.br
+noura.limam@gmail.com
