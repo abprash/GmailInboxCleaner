@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 from __future__ import print_function
 import httplib2
 import os
@@ -7,9 +6,12 @@ from apiclient import discovery
 from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
+
 #multithreaded inbox cleaner
 from multiprocessing import Pool
 from multiprocessing.dummy import Pool as ThreadPool
+
+
 
 try:
 	import argparse
@@ -109,10 +111,9 @@ def get_service():
 	messages = service.users().messages().list(userId='me').execute()
 	return service
 
-def work(message):
+def work(msg_id):
 	count = 0
-	#print(message)
-	message = service.users().messages().get(userId='me',id=message).execute()
+	message = service.users().messages().get(userId='me',id=msg_id).execute()
 	headers = message["payload"]["headers"]
 	current_id = message["id"]
 	for i in headers:
@@ -132,8 +133,7 @@ def work(message):
 					#print("FOUND: "+sender)
 					#print("Will delete them soon")
 					#service.users().messages().delete(userId = 'me', id=current_id).execute()
-				sender_list.append(sender)
-			break
+				return sender
 
 
 def get_email_list(service):
@@ -142,7 +142,7 @@ def get_email_list(service):
 	response = service.users().messages().list(userId='me').execute()
 	emails = []
 	emails.extend(response["messages"])
-	pool = ThreadPool(4)
+	
 
 	#will scan over all the emails in the inbox
 	while "nextPageToken" in response:
@@ -162,8 +162,9 @@ def get_email_list(service):
 	f2.close()
 
 	#make a list of all the senders
+	pool = ThreadPool(2)
+	results = pool.map(work,message_ID_list)
 	
-	pool.map(work,message_ID_list)
 	pool.close()
 	pool.join()
 	#start deleting them
